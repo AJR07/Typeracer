@@ -1,0 +1,20 @@
+{
+  "database": {
+    "rules": "firebase/database/rules.json"
+  },
+  "firestore": {
+    "rules": "firebase/firestore/rules.rules",
+    "indexes": "firebase/firestore/indexes.json"
+  },
+  "hosting": {
+    "public": "dist",
+    "site": "typeracer-ajr07",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

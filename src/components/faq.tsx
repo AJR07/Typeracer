@@ -2,6 +2,7 @@ import { IconButton } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useState } from "react";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
+import { motion } from "framer-motion";
 
 interface FAQComponentProps {
     question: string;
@@ -13,9 +14,14 @@ export default function FAQComponent(props: FAQComponentProps) {
 
     return (
         <div className="faq" style={{ textAlign: "left" }}>
-            <Stack id="toggle" direction="row" spacing={1}>
+            <Stack
+                id="toggle"
+                direction="row"
+                spacing={1}
+                onClick={() => setHidden(!hidden)}
+                style={{ cursor: "pointer" }}
+            >
                 <IconButton
-                    onClick={() => setHidden(!hidden)}
                     style={{
                         background: "transparent",
                         border: "none",
@@ -35,7 +41,13 @@ export default function FAQComponent(props: FAQComponentProps) {
                 </IconButton>
                 <h2>{props.question}</h2>
             </Stack>
-            <p hidden={hidden}>{props.answer}</p>
+            <motion.p
+                hidden={hidden}
+                style={{ color: "white" }}
+                animate={{ y: hidden ? -30 : 0, opacity: hidden ? 0 : 1 }}
+            >
+                {props.answer}
+            </motion.p>
         </div>
     );
 }

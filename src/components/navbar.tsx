@@ -41,7 +41,7 @@ export default function NavigationBar() {
             whileHover={{ backgroundColor: "#4444ff" }}
             style={{
                 width: "4vw",
-                backgroundColor: "#2222dd",
+                backgroundColor: "#4488ff",
                 height: "80vh",
                 marginTop: "10vh",
                 borderTopRightRadius: "2vw",

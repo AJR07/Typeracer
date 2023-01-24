@@ -3,7 +3,9 @@ import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Profile from "./profile";
 import { motion } from "framer-motion";
-import { Stack } from "@mui/material";
+import { Button, Stack, TextField } from "@mui/material";
+import SignIn from "./signin";
+import SignUp from "./signup";
 
 const auth = getAuth(firebaseApp);
 
@@ -20,54 +22,13 @@ export default function SignInOrUp() {
     }
 
     return (
-        <Stack style={{ width: "100%" }} direction="column" spacing={3}>
-            <motion.div
-                style={{
-                    backgroundColor: "rgba(150, 255, 50, 0.6)",
-                    width: "94vw",
-                    marginLeft: "1vw",
-                    borderTopLeftRadius: "1vw",
-                    borderBottomLeftRadius: "1vw",
-                }}
-                whileHover={{
-                    backgroundColor: "rgba(150, 255, 50, 0.5)",
-                    borderTopLeftRadius: "1.5vw",
-                    borderBottomLeftRadius: "1.5vw",
-                }}
-            >
-                <Stack direction="column">
-                    <h1 style={{ textAlign: "center", marginBottom: "0" }}>
-                        Sign Up
-                    </h1>
-                    <h3 style={{ textAlign: "center" }}>
-                        If you have an account.
-                    </h3>
-                </Stack>
-            </motion.div>
-
-            <motion.div
-                style={{
-                    backgroundColor: "rgba(50, 255, 150, 0.6)",
-                    width: "94vw",
-                    marginLeft: "1vw",
-                    borderTopLeftRadius: "1vw",
-                    borderBottomLeftRadius: "1vw",
-                }}
-                whileHover={{
-                    backgroundColor: "rgba(50, 255, 150, 0.5)",
-                    borderTopLeftRadius: "1.5vw",
-                    borderBottomLeftRadius: "1.5vw",
-                }}
-            >
-                <Stack direction="column">
-                    <h1 style={{ textAlign: "center", marginBottom: "0" }}>
-                        Sign In
-                    </h1>
-                    <h3 style={{ textAlign: "center" }}>
-                        If you have an account.
-                    </h3>
-                </Stack>
-            </motion.div>
+        <Stack
+            style={{ width: "100%", margin: "0" }}
+            direction="column"
+            spacing={3}
+        >
+            <SignUp />
+            <SignIn />
         </Stack>
     );
 }

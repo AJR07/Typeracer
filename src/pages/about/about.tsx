@@ -29,6 +29,13 @@ export default function About() {
                     answer="This is made as a submission for the Y4 CEP WA1. The inspiration was primarily from the website https://play.typeracer.com/, as well as the website https://monkeytype.com/."
                 />
             </Stack>
+            <h1 style={{ textAlign: "center" }}>Development Log</h1>
+            <Stack direction="column" style={{ padding: "1vw" }}>
+                <FAQComponent
+                    question="24 January"
+                    answer="Fully functional authentication system, displaying statistics and other account details :D. This includes Sign Up, Sign In, and Logout as well as storing of user information in Firestorm and displaying it"
+                />
+            </Stack>
         </div>
     );
 }

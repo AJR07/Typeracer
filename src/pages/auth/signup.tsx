@@ -27,8 +27,8 @@ function SignUpWithEmailPassword(
                 email: email,
                 uid: userCredential.user.uid,
                 creationDate: new Date(),
-                averageWPM: 0,
-                averageAccuracy: 0,
+                averageWPM: [],
+                averageAccuracy: [],
                 numberOfGamesPlayed: 0,
             } as UserData).catch(() => {
                 setNotification("An error has occurred.");

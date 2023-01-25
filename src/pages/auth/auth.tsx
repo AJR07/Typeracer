@@ -2,8 +2,7 @@ import firebaseApp from "../../lib/firebase";
 import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Profile from "./profile";
-import { motion } from "framer-motion";
-import { Button, Stack, TextField } from "@mui/material";
+import { Stack } from "@mui/material";
 import SignIn from "./signin";
 import SignUp from "./signup";
 

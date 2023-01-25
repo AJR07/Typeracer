@@ -35,6 +35,10 @@ export default function About() {
                     question="24 January"
                     answer="Fully functional authentication system, displaying statistics and other account details :D. This includes Sign Up, Sign In, and Logout as well as storing of user information in Firestorm and displaying it"
                 />
+                <FAQComponent
+                    question="25 January"
+                    answer="The singleplayer page kind of works, I have added the starting sequence, and how the process is gonna work when I generate quotes. Need to find a library to generate the quotes better, and also need to figure out the end screen :D. Other than that, the page is pretty much done and I am on track-ish."
+                />
             </Stack>
         </div>
     );

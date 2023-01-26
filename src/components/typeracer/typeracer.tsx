@@ -1,8 +1,9 @@
 import { Button, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useEffect, useState } from "react";
-import { paragraph } from "txtgen";
+import Character from "./character";
 import Stages from "./stages";
+import { BarChart } from "echarts/charts";
 
 interface TypeRacerProps {
     publicGame: boolean;
@@ -16,26 +17,30 @@ export default function TypeRacer(props: TypeRacerProps) {
     let [completedQuote, setCompletedQuote] = useState("");
     let [countdown, setCountdown] = useState<null | number>(null);
     let [stages, setStages] = useState<Stages>(props.publicGame ? 0 : 1);
+    let [arr, setArr] = useState<Character[]>([]);
 
     useEffect(() => {
-        let rand = Math.floor(Math.random() * 10000);
-        while (rand != 0) {
-            paragraph(5);
-            rand--;
-        }
-        setQuote(paragraph(5));
+        fetch(
+            "https://api.quotable.io/random?" +
+                new URLSearchParams({
+                    minLength: "200",
+                })
+        ).then((response) => {
+            response.json().then((value) => {
+                setQuote(`"${value.content}" - ${value.author}`);
+            });
+        });
     }, []);
 
-    let blankSpace = "";
-    for (let i = 0; i < progress; i++) {
-        blankSpace += "&nbsp;";
+    if (progress === quote.length && quote.length !== 0 && stages !== 3) {
+        setStages(3);
     }
 
     return (
         <div id="typeracer">
             <Stack
                 style={{
-                    backgroundColor: "#337733",
+                    backgroundColor: "#444477",
                     borderRadius: "1vw",
                     padding: "1vw",
                     marginRight: "1vw",
@@ -46,18 +51,20 @@ export default function TypeRacer(props: TypeRacerProps) {
                         style={{
                             fontFamily: "Fira Code, monospace",
                             fontWeight: "bold",
-                            marginRight: "2vw",
-                            color: "yellow",
+                            color: "white",
                         }}
                     >
                         {quote}
                     </p>
                     <p
                         style={{
+                            textShadow: "0px 0px 10px white",
                             fontFamily: "Fira Code, monospace",
                             fontWeight: "bold",
                             position: "absolute",
+                            marginRight: "2vw",
                             zIndex: 2,
+                            color: "#444477",
                         }}
                     >
                         {`${quote.substring(0, progress)}`}
@@ -85,7 +92,7 @@ export default function TypeRacer(props: TypeRacerProps) {
                     >
                         {countdown === null ? "Start" : countdown}
                     </Button>
-                ) : (
+                ) : stages == 2 ? (
                     <TextField
                         style={{
                             backgroundColor: "#ddffdd",
@@ -102,11 +109,22 @@ export default function TypeRacer(props: TypeRacerProps) {
                             ) {
                                 setProgress(progress + len);
                                 setCompletedQuote("");
+                                let newArr = [...arr];
+                                newArr.push({
+                                    character: val.substring(
+                                        progress,
+                                        progress + len
+                                    ),
+                                    time: Date.now(),
+                                });
+                                setArr(newArr);
                             } else {
                                 setCompletedQuote(val);
                             }
                         }}
                     ></TextField>
+                ) : (
+                    <div></div>
                 )}
             </Stack>
         </div>

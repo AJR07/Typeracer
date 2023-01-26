@@ -38,7 +38,7 @@ export default function NavigationBar() {
     return (
         <motion.div
             id="navbar"
-            whileHover={{ backgroundColor: "#4444ff" }}
+            whileHover={{ backgroundColor: "#4477ff" }}
             style={{
                 width: "4vw",
                 backgroundColor: "#4488ff",

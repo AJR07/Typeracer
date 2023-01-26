@@ -39,6 +39,10 @@ export default function About() {
                     question="25 January"
                     answer="The singleplayer page kind of works, I have added the starting sequence, and how the process is gonna work when I generate quotes. Need to find a library to generate the quotes better, and also need to figure out the end screen :D. Other than that, the page is pretty much done and I am on track-ish."
                 />
+                <FAQComponent
+                    question="26 January"
+                    answer="Didn't actually have enough time to complete much today, it was mainly just deciding on a charting library, modifying the UI for the typeracer singleplayer :("
+                />
             </Stack>
         </div>
     );

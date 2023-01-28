@@ -44,7 +44,12 @@ export default function FAQComponent(props: FAQComponentProps) {
             <motion.p
                 hidden={hidden}
                 style={{ color: "white" }}
-                animate={{ y: hidden ? -30 : 0, opacity: hidden ? 0 : 1 }}
+                animate={{
+                    y: hidden ? -30 : 0,
+                    color: hidden
+                        ? "rgba(255, 255, 255, 0)"
+                        : "rgba(255, 255, 255, 1)",
+                }}
             >
                 {props.answer}
             </motion.p>

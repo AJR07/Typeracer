@@ -85,6 +85,7 @@ export default function TypeRacer(props: TypeRacerProps) {
                                 setArr([{ character: "", time: Date.now() }]);
                             }, 4000);
                         }}
+                        disabled={countdown !== null}
                     >
                         {countdown === null ? "Start" : countdown}
                     </Button>

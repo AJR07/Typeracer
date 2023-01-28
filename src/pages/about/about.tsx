@@ -43,6 +43,10 @@ export default function About() {
                     question="26 January"
                     answer="Didn't actually have enough time to complete much today, it was mainly just deciding on a charting library, modifying the UI for the typeracer singleplayer :("
                 />
+                <FAQComponent
+                    question="28 January"
+                    answer="Singleplayer is done! Learnt how to represent statistics with graphs, and the singleplayer page is fully functional! I have also saved the data to firebase for future use/statistics :D"
+                />
             </Stack>
         </div>
     );

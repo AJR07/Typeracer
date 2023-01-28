@@ -56,6 +56,7 @@ export default function Graph(props: GraphProps) {
                     let user = userData as UserData;
                     user.averageWPM.push(wpm);
                     user.averageAccuracy.push(100 - props.accuracy * 100);
+                    user.numberOfGamesPlayed += 1;
                     setDoc(doc(db, "users", uid!), user).catch();
                 })
                 .catch();

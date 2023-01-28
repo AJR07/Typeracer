@@ -2,8 +2,8 @@ import { Button, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useEffect, useState } from "react";
 import Character from "./character";
+import Graph from "./graph";
 import Stages from "./stages";
-import { BarChart } from "echarts/charts";
 
 interface TypeRacerProps {
     publicGame: boolean;
@@ -18,12 +18,14 @@ export default function TypeRacer(props: TypeRacerProps) {
     let [countdown, setCountdown] = useState<null | number>(null);
     let [stages, setStages] = useState<Stages>(props.publicGame ? 0 : 1);
     let [arr, setArr] = useState<Character[]>([]);
+    let [wrongKeys, setWrongKeys] = useState(0);
+    let [totalKeys, setTotalKeys] = useState(0);
 
     useEffect(() => {
         fetch(
             "https://api.quotable.io/random?" +
                 new URLSearchParams({
-                    minLength: "200",
+                    minLength: "50",
                 })
         ).then((response) => {
             response.json().then((value) => {
@@ -51,23 +53,16 @@ export default function TypeRacer(props: TypeRacerProps) {
                         style={{
                             fontFamily: "Fira Code, monospace",
                             fontWeight: "bold",
-                            color: "white",
                         }}
                     >
-                        {quote}
-                    </p>
-                    <p
-                        style={{
-                            textShadow: "0px 0px 10px white",
-                            fontFamily: "Fira Code, monospace",
-                            fontWeight: "bold",
-                            position: "absolute",
-                            marginRight: "2vw",
-                            zIndex: 2,
-                            color: "#444477",
-                        }}
-                    >
-                        {`${quote.substring(0, progress)}`}
+                        <mark
+                            style={{
+                                backgroundColor: "green",
+                                fontFamily: "Fira Code, monospace",
+                                fontWeight: "bold",
+                            }}
+                        >{`${quote.substring(0, progress)}`}</mark>
+                        {`${quote.substring(progress, quote.length)}`}
                     </p>
                 </Stack>
 
@@ -87,6 +82,7 @@ export default function TypeRacer(props: TypeRacerProps) {
                             setTimeout(() => {
                                 setCountdown(0);
                                 setStages(2);
+                                setArr([{ character: "", time: Date.now() }]);
                             }, 4000);
                         }}
                     >
@@ -104,6 +100,7 @@ export default function TypeRacer(props: TypeRacerProps) {
                         onChange={(e) => {
                             let val = e.target.value;
                             let len = val.length;
+                            setTotalKeys(totalKeys + 1);
                             if (
                                 val == quote.substring(progress, progress + len)
                             ) {
@@ -111,7 +108,7 @@ export default function TypeRacer(props: TypeRacerProps) {
                                 setCompletedQuote("");
                                 let newArr = [...arr];
                                 newArr.push({
-                                    character: val.substring(
+                                    character: quote.substring(
                                         progress,
                                         progress + len
                                     ),
@@ -120,11 +117,12 @@ export default function TypeRacer(props: TypeRacerProps) {
                                 setArr(newArr);
                             } else {
                                 setCompletedQuote(val);
+                                setWrongKeys(wrongKeys + 1);
                             }
                         }}
                     ></TextField>
                 ) : (
-                    <div></div>
+                    <Graph arr={arr} accuracy={wrongKeys / totalKeys} />
                 )}
             </Stack>
         </div>

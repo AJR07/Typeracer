@@ -18,6 +18,7 @@
         "@mui/x-data-grid": "^5.17.14",
         "@noble/hashes": "^1.1.5",
         "echarts": "^5.4.1",
+        "echarts-for-react": "^3.0.2",
         "firebase": "^9.6.9",
         "framer-motion": "^7.6.19",
         "react": "^17.0.2",

@@ -19,6 +19,7 @@ export default function Graph(props: GraphProps) {
     let [uploadedData, setUploadedData] = useState(false);
     let characterSoFar = 0,
         cpmArray: number[][] = [],
+        accArray: number[][] = [],
         spaces = 0;
 
     for (let char of props.arr) {
@@ -26,9 +27,12 @@ export default function Graph(props: GraphProps) {
         if (cpmArray.length > 0) {
             let cpm =
                 60 / ((char.time - props.arr[0].time) / 1000 / characterSoFar);
-            cpmArray.push([characterSoFar, cpm]);
+            cpmArray.push([characterSoFar, Math.round(cpm)]);
+            let accuracy = Math.round(char.acc);
+            accArray.push([characterSoFar, isNaN(accuracy) ? 0 : accuracy]);
         } else {
             cpmArray.push([0, 0]);
+            accArray.push([characterSoFar, Math.round(char.acc)]);
         }
         for (let charr of char.character) {
             if (charr == " ") spaces++;
@@ -64,18 +68,65 @@ export default function Graph(props: GraphProps) {
     }, []);
 
     let options = {
-        grid: { top: 8, right: 8, bottom: 24, left: 36 },
-        xAxis: {},
-        yAxis: {},
+        xAxis: {
+            name: "Characters Typed",
+            type: "value",
+            axisLabel: {
+                formatter: "{value} Characters",
+            },
+        },
+        yAxis: [
+            {
+                type: "value",
+                name: "Characters Per Minute",
+                axisLabel: {
+                    formatter: "{value} CPM",
+                },
+            },
+            {
+                type: "value",
+                name: "Accuracy",
+                axisLabel: {
+                    formatter: "{value}%",
+                },
+            },
+        ],
         series: [
             {
+                name: "CPM",
+                tooltip: {
+                    valueFormatter: (value: number) => {
+                        return value + " CPM";
+                    },
+                },
                 data: cpmArray,
+                type: "line",
+                smooth: true,
+            },
+            {
+                name: "Accuracy",
+                tooltip: {
+                    valueFormatter: (value: number) => {
+                        return value + "%";
+                    },
+                },
+                data: accArray,
                 type: "line",
                 smooth: true,
             },
         ],
         tooltip: {
             trigger: "axis",
+            axisPointer: {
+                type: "cross",
+            },
+        },
+        toolbox: {
+            feature: {
+                dataView: { show: true, readOnly: false },
+                magicType: { show: true, type: ["line", "bar"] },
+                saveAsImage: { show: true },
+            },
         },
     };
     return (

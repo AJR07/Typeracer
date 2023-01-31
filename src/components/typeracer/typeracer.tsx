@@ -42,7 +42,7 @@ export default function TypeRacer(props: TypeRacerProps) {
         <div id="typeracer">
             <Stack
                 style={{
-                    backgroundColor: "#444477",
+                    backgroundColor: "#0d104f",
                     borderRadius: "1vw",
                     padding: "1vw",
                     marginRight: "1vw",
@@ -55,14 +55,35 @@ export default function TypeRacer(props: TypeRacerProps) {
                             fontWeight: "bold",
                         }}
                     >
-                        <mark
+                        <p
                             style={{
-                                backgroundColor: "green",
+                                color: "yellow",
                                 fontFamily: "Fira Code, monospace",
                                 fontWeight: "bold",
+                                display: "inline",
                             }}
-                        >{`${quote.substring(0, progress)}`}</mark>
-                        {`${quote.substring(progress, quote.length)}`}
+                        >{`${quote.substring(0, progress)}`}</p>
+                        <p
+                            style={{
+                                color: "red",
+                                fontFamily: "Fira Code, monospace",
+                                fontWeight: "bold",
+                                display: "inline",
+                            }}
+                        >{`${quote.substring(
+                            progress,
+                            Math.min(
+                                progress + completedQuote.length,
+                                quote.length
+                            )
+                        )}`}</p>
+                        {`${quote.substring(
+                            Math.min(
+                                progress + completedQuote.length,
+                                quote.length
+                            ),
+                            quote.length
+                        )}`}
                     </p>
                 </Stack>
 
@@ -82,7 +103,13 @@ export default function TypeRacer(props: TypeRacerProps) {
                             setTimeout(() => {
                                 setCountdown(0);
                                 setStages(2);
-                                setArr([{ character: "", time: Date.now() }]);
+                                setArr([
+                                    {
+                                        character: "",
+                                        acc: 100,
+                                        time: Date.now(),
+                                    },
+                                ]);
                             }, 4000);
                         }}
                         disabled={countdown !== null}
@@ -113,6 +140,7 @@ export default function TypeRacer(props: TypeRacerProps) {
                                         progress,
                                         progress + len
                                     ),
+                                    acc: 100 - (wrongKeys / totalKeys) * 100,
                                     time: Date.now(),
                                 });
                                 setArr(newArr);

@@ -1,6 +1,7 @@
 import { Button, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useEffect, useState } from "react";
+import Timer from "../../../components/timer";
 import Character from "./character";
 import Graph from "./graph";
 import Stages from "./stages";
@@ -48,6 +49,11 @@ export default function TypeRacer(props: TypeRacerProps) {
                     marginRight: "1vw",
                 }}
             >
+                {stages === 2 ? (
+                    <h3 style={{ display: "flex", justifyContent: "right" }}>
+                        Time Elapsed: <Timer />
+                    </h3>
+                ) : null}
                 <Stack id="text-display">
                     <p
                         style={{
@@ -62,7 +68,15 @@ export default function TypeRacer(props: TypeRacerProps) {
                                 fontWeight: "bold",
                                 display: "inline",
                             }}
-                        >{`${quote.substring(0, progress)}`}</p>
+                        >{`${quote.substring(0, progress - 1)}`}</p>
+                        <u
+                            style={{
+                                color: "yellow",
+                                fontFamily: "Fira Code, monospace",
+                                fontWeight: "bold",
+                                display: "inline",
+                            }}
+                        >{`${quote.substring(progress - 1, progress)}`}</u>
                         <p
                             style={{
                                 color: "red",
@@ -91,15 +105,14 @@ export default function TypeRacer(props: TypeRacerProps) {
                     <Button
                         variant="contained"
                         onClick={() => {
-                            setTimeout(() => {
-                                setCountdown(3);
-                            }, 1000);
+                            if (countdown !== null) return;
+                            setCountdown(3);
                             setTimeout(() => {
                                 setCountdown(2);
-                            }, 2000);
+                            }, 1000);
                             setTimeout(() => {
                                 setCountdown(1);
-                            }, 3000);
+                            }, 2000);
                             setTimeout(() => {
                                 setCountdown(0);
                                 setStages(2);
@@ -110,9 +123,9 @@ export default function TypeRacer(props: TypeRacerProps) {
                                         time: Date.now(),
                                     },
                                 ]);
-                            }, 4000);
+                            }, 3000);
                         }}
-                        disabled={countdown !== null}
+                        color={countdown !== null ? "error" : "success"}
                     >
                         {countdown === null ? "Start" : countdown}
                     </Button>
@@ -125,28 +138,37 @@ export default function TypeRacer(props: TypeRacerProps) {
                             marginRight: "1vw",
                         }}
                         value={completedQuote}
+                        onKeyDown={(e) => {
+                            // prevent shortcuts
+                            if (e.ctrlKey || e.altKey || e.metaKey) {
+                                e.preventDefault();
+                            }
+                        }}
                         onChange={(e) => {
                             let val = e.target.value;
                             let len = val.length;
-                            setTotalKeys(totalKeys + 1);
+                            setTotalKeys((k) => k + 1);
                             if (
                                 val == quote.substring(progress, progress + len)
                             ) {
-                                setProgress(progress + len);
+                                setProgress((p) => p + len);
                                 setCompletedQuote("");
-                                let newArr = [...arr];
-                                newArr.push({
-                                    character: quote.substring(
-                                        progress,
-                                        progress + len
-                                    ),
-                                    acc: 100 - (wrongKeys / totalKeys) * 100,
-                                    time: Date.now(),
+                                setArr((arr) => {
+                                    let newArr = [...arr];
+                                    newArr.push({
+                                        character: quote.substring(
+                                            progress,
+                                            progress + len
+                                        ),
+                                        acc:
+                                            100 - (wrongKeys / totalKeys) * 100,
+                                        time: Date.now(),
+                                    });
+                                    return newArr;
                                 });
-                                setArr(newArr);
                             } else {
                                 setCompletedQuote(val);
-                                setWrongKeys(wrongKeys + 1);
+                                setWrongKeys((k) => k + 1);
                             }
                         }}
                     ></TextField>

@@ -3,8 +3,8 @@ import ReactECharts from "echarts-for-react";
 import { getAuth } from "firebase/auth";
 import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import firebaseApp from "../../lib/firebase";
-import { UserData } from "../../types/user";
+import firebaseApp from "../../../lib/firebase";
+import { UserData } from "../../../types/user";
 import Character from "./character";
 
 interface GraphProps {
@@ -32,7 +32,6 @@ export default function Graph(props: GraphProps) {
             accArray.push([characterSoFar, isNaN(accuracy) ? 0 : accuracy]);
         } else {
             cpmArray.push([0, 0]);
-            accArray.push([characterSoFar, Math.round(char.acc)]);
         }
         for (let charr of char.character) {
             if (charr == " ") spaces++;
@@ -86,6 +85,9 @@ export default function Graph(props: GraphProps) {
             {
                 type: "value",
                 name: "Accuracy",
+                min: 0,
+                max: 100,
+                interval: 20,
                 axisLabel: {
                     formatter: "{value}%",
                 },

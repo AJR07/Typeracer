@@ -47,6 +47,10 @@ export default function About() {
                     question="28 January"
                     answer="Singleplayer is done! Learnt how to represent statistics with graphs, and the singleplayer page is fully functional! I have also saved the data to firebase for future use/statistics :D"
                 />
+                <FAQComponent
+                    question="31 January"
+                    answer="Quite a lot of progress actually. I have enhanced the UI on the start button, graph (added accuracy), and the typeracer text and background. The colours, at leat in my opinion, look a lot more contrasting and calmer to look at too. The graph at the back also received major improvements, as well as bug fixes towards cheats such as using shortcuts. I have also added a timer for the user to check their current time/schedule. SINGLEPLAYER IS DONE!"
+                />
             </Stack>
         </div>
     );

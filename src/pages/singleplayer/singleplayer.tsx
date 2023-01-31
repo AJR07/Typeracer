@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import TypeRacer from "../../components/typeracer/typeracer";
+import TypeRacer from "./typeracer/typeracer";
 import firebaseApp from "../../lib/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Button } from "@mui/material";

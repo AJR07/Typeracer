@@ -22,8 +22,8 @@ function NavBarButton(props: NavBarButtonProps) {
                 }}
                 sx={{
                     color: "white",
-                    width: "40px",
-                    padding: "0vw",
+                    width: "30px",
+                    paddingRight: "15px",
                     marginLeft: "0.5vw",
                 }}
             >
@@ -40,19 +40,23 @@ export default function NavigationBar() {
             id="navbar"
             whileHover={{ backgroundColor: "#4477ff" }}
             style={{
-                width: "4vw",
+                width: "50px",
                 backgroundColor: "#4488ff",
                 height: "80vh",
                 marginTop: "10vh",
-                borderTopRightRadius: "2vw",
-                borderBottomRightRadius: "2vw",
+                borderTopRightRadius: "15px",
+                borderBottomRightRadius: "15px",
             }}
         >
-            <Stack direction="column" spacing={2}>
+            <Stack
+                direction="column"
+                spacing={2}
+                style={{ display: "flex", alignItems: "center" }}
+            >
                 <Link to="/home">
                     <img
                         src="/typing.png"
-                        style={{ width: "2.5vw", padding: "0.5vw" }}
+                        style={{ width: "30px", padding: "7.5px" }}
                     ></img>
                 </Link>
 

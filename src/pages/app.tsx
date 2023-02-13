@@ -4,6 +4,7 @@ import NavigationBar from "../components/navbar";
 import PageNotFound from "./404/PageNotFound";
 import About from "./about/about";
 import SignInOrUp from "./auth/auth";
+import MultiPlayer from "./multiplayer/multiplayer";
 import SinglePlayer from "./singleplayer/singleplayer";
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
                             path="/singleplayer"
                             element={<SinglePlayer />}
                         />
+                        <Route path="/multiplayer" element={<MultiPlayer />} />
                         <Route path="*" element={<PageNotFound />} />
                     </Routes>
                 </Stack>

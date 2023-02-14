@@ -2,19 +2,14 @@ import { Button, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useEffect, useState } from "react";
 import firebaseApp from "../../lib/firebase";
-import {
-    DataSnapshot,
-    get,
-    getDatabase,
-    onDisconnect,
-    onValue,
-    ref,
-    set,
-} from "firebase/database";
+import { get, getDatabase, onDisconnect, ref, set } from "firebase/database";
 import Game from "../../types/game";
 import { User } from "firebase/auth";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { UserData } from "../../types/user";
 
 const db = getDatabase(firebaseApp);
+const firebaseDB = getFirestore(firebaseApp);
 
 interface JoinGameProps {
     setGameID: React.Dispatch<React.SetStateAction<string | null>>;
@@ -48,7 +43,13 @@ export default function JoinGame(props: JoinGameProps) {
             <Button
                 variant="contained"
                 onClick={() => {
-                    createGame(setNotification, setProcessing, props);
+                    createGame(setNotification, setProcessing, props).catch(
+                        () => {
+                            setNotification(
+                                "An error occured while creating a game."
+                            );
+                        }
+                    );
                 }}
                 disabled={processing}
             >
@@ -71,6 +72,10 @@ export default function JoinGame(props: JoinGameProps) {
                             setProcessing,
                             props,
                             joinGameVal
+                        ).catch(() =>
+                            setNotification(
+                                "An error occured while creating a game."
+                            )
                         )
                     }
                     variant="contained"
@@ -96,22 +101,27 @@ async function joinGame(
     setProcessing(true);
     setNotification("Joining game...");
     let dbRef = ref(db, "games/" + gameID);
+    let userDetails = await getDoc(doc(firebaseDB, "users", props.user.uid));
     let snapshot = await get(dbRef);
 
-    if (snapshot.exists()) {
+    if (snapshot.exists() && userDetails.exists()) {
         let gameData = snapshot.val() as Game;
+        let userData = userDetails.data() as UserData;
         gameData.playerData[props.user.uid] = {
             progress: 0,
             accuracy: 0,
+            name: userData.name,
         };
         await set(dbRef, gameData);
-        delete gameData.playerData[props.user.uid];
-        onDisconnect(dbRef).update(gameData);
+        onDisconnect(
+            ref(db, "games/" + gameID + "/playerData/" + props.user.uid)
+        ).remove();
         setNotification("Game created!");
         setProcessing(false);
         props.setGameID(gameID);
     } else {
         setNotification("An error occured while joining a game.");
+        setProcessing(false);
     }
 }
 
@@ -127,11 +137,12 @@ async function createGame(
     setProcessing(true);
     setNotification("Creating game...");
     let dbRef = ref(db, "games/" + id);
+    let userDetails = await getDoc(doc(firebaseDB, "users", props.user.uid));
     let snapshot = await get(dbRef);
 
     if (snapshot.exists()) {
         createGame(setNotification, setProcessing, props);
-    } else {
+    } else if (userDetails.exists()) {
         await set(dbRef, {
             id: id,
             hostID: props.user.uid,
@@ -141,6 +152,7 @@ async function createGame(
                 [props.user.uid]: {
                     progress: 0,
                     accuracy: 0,
+                    name: (userDetails.data() as UserData).name,
                 },
             },
         } as Game);
@@ -148,5 +160,8 @@ async function createGame(
         setNotification("Game created!");
         setProcessing(false);
         props.setGameID(id);
+    } else {
+        setNotification("An error occured while creating a game.");
+        setProcessing(false);
     }
 }

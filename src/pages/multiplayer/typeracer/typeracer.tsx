@@ -7,6 +7,8 @@ import Graph from "./graph";
 import Stages from "./stages";
 
 interface TypeRacerProps {
+    publicGame: boolean;
+    userIDs: string[];
     hostID: string;
 }
 
@@ -15,7 +17,7 @@ export default function TypeRacer(props: TypeRacerProps) {
     let [progress, setProgress] = useState(0);
     let [completedQuote, setCompletedQuote] = useState("");
     let [countdown, setCountdown] = useState<null | number>(null);
-    let [stages, setStages] = useState<Stages>(1);
+    let [stages, setStages] = useState<Stages>(props.publicGame ? 0 : 1);
     let [arr, setArr] = useState<Character[]>([]);
     let [wrongKeys, setWrongKeys] = useState(0);
     let [totalKeys, setTotalKeys] = useState(0);

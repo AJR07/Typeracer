@@ -36,11 +36,7 @@ export default function SinglePlayer() {
     return (
         <div>
             <h1>TypeRacer - Single Player!</h1>
-            <TypeRacer
-                publicGame={false}
-                userIDs={[user.uid]}
-                hostID={user.uid}
-            />
+            <TypeRacer hostID={user.uid} />
         </div>
     );
 }

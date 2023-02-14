@@ -5,6 +5,7 @@ export default interface Game {
     ended: boolean;
     playerData: {
         [id: string]: {
+            name: string;
             progress: number;
             accuracy: number;
         };

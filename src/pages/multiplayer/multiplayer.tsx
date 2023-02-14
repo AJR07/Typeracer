@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { getAuth } from "firebase/auth";
 import { getDatabase, onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
@@ -22,7 +22,6 @@ export default function MultiPlayer() {
         onValue(dbRef, (snapshot) => {
             if (!snapshot.exists()) return;
             setGameData(snapshot.val() as Game);
-            console.log(gameData);
         });
     }, [gameID]);
 
@@ -48,6 +47,7 @@ export default function MultiPlayer() {
         );
     }
 
+    let count = 0;
     return (
         <div id="multiplayer" style={{ width: "100%" }}>
             <h1 style={{ textAlign: "center" }}>Multiplayer</h1>
@@ -55,7 +55,31 @@ export default function MultiPlayer() {
                 <JoinGame setGameID={setGameID} user={user} />
             ) : (
                 <div>
-                    <h1>Game ID: {gameID}</h1>
+                    <h3>Game ID: {gameID}</h3>
+                    <p>
+                        Share the Game ID with your friends for them to join the
+                        same game as you!
+                    </p>
+                    <h3>Players Available: </h3>
+
+                    {gameData && gameData.playerData ? (
+                        <Stack direction="column">
+                            {Object.entries(gameData?.playerData).map(
+                                (player) => {
+                                    return (
+                                        <pre
+                                            style={{ padding: 0, margin: 0 }}
+                                            key={player[0]}
+                                        >
+                                            {++count}. {player[1].name}
+                                        </pre>
+                                    );
+                                }
+                            )}
+                        </Stack>
+                    ) : (
+                        <p>Waiting for players...</p>
+                    )}
                 </div>
             )}
         </div>

@@ -53,7 +53,7 @@ export default function About() {
                 />
                 <FAQComponent
                     question="13/14 February"
-                    answer="Added functionality for multiplayer, specifically joining of games and game IDs, as well as how every participant will deal with the game."
+                    answer="Added functionality for multiplayer, specifically joining of games and game IDs, as well as how every participant will deal with the game. We are able to track each game's data in realtime. Next up, the actual game!"
                 />
             </Stack>
         </div>

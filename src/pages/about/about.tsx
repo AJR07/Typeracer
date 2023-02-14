@@ -51,6 +51,10 @@ export default function About() {
                     question="31 January"
                     answer="Quite a lot of progress actually. I have enhanced the UI on the start button, graph (added accuracy), and the typeracer text and background. The colours, at leat in my opinion, look a lot more contrasting and calmer to look at too. The graph at the back also received major improvements, as well as bug fixes towards cheats such as using shortcuts. I have also added a timer for the user to check their current time/schedule. SINGLEPLAYER IS DONE!"
                 />
+                <FAQComponent
+                    question="13/14 February"
+                    answer="Added functionality for multiplayer, specifically joining of games and game IDs, as well as how every participant will deal with the game."
+                />
             </Stack>
         </div>
     );

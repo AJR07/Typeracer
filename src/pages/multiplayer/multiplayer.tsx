@@ -1,17 +1,30 @@
 import { Button } from "@mui/material";
 import { getAuth } from "firebase/auth";
-import { useState } from "react";
+import { getDatabase, onValue, ref } from "firebase/database";
+import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import firebaseApp from "../../lib/firebase";
+import Game from "../../types/game";
 import JoinGame from "./joingame";
 
 const auth = getAuth(firebaseApp);
+const db = getDatabase(firebaseApp);
 
 export default function MultiPlayer() {
     const [gameID, setGameID] = useState<string | null>(null);
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
+    const [gameData, setGameData] = useState<Game | null>(null);
+
+    useEffect(() => {
+        const dbRef = ref(db, "games/" + gameID);
+        onValue(dbRef, (snapshot) => {
+            if (!snapshot.exists()) return;
+            setGameData(snapshot.val() as Game);
+            console.log(gameData);
+        });
+    }, [gameID]);
 
     if (loading) {
         return <p> Loading...</p>;

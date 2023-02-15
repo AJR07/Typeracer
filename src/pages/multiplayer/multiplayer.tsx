@@ -1,12 +1,13 @@
 import { Button, Stack } from "@mui/material";
 import { getAuth } from "firebase/auth";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, onValue, ref, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import firebaseApp from "../../lib/firebase";
 import Game from "../../types/game";
 import JoinGame from "./joingame";
+import TypeRacer from "./typeracer/typeracer";
 
 const auth = getAuth(firebaseApp);
 const db = getDatabase(firebaseApp);
@@ -24,6 +25,14 @@ export default function MultiPlayer() {
             setGameData(snapshot.val() as Game);
         });
     }, [gameID]);
+
+    useEffect(() => {
+        // upload
+        if (gameData && user) {
+            const dbRef = ref(db, "games/" + gameID);
+            set(dbRef, gameData);
+        }
+    }, [gameData]);
 
     if (loading) {
         return <p> Loading...</p>;
@@ -54,33 +63,47 @@ export default function MultiPlayer() {
             {!gameID ? (
                 <JoinGame setGameID={setGameID} user={user} />
             ) : (
-                <div>
-                    <h3>Game ID: {gameID}</h3>
-                    <p>
-                        Share the Game ID with your friends for them to join the
-                        same game as you!
-                    </p>
-                    <h3>Players Available: </h3>
+                <Stack spacing={2}>
+                    <Stack direction="column">
+                        <h3>Game ID: {gameID}</h3>
+                        <p>
+                            Share the Game ID with your friends for them to join
+                            the same game as you!
+                        </p>
+                        <h3>Players Available: </h3>
+                        {gameData && gameData.playerData ? (
+                            <Stack direction="column">
+                                {Object.entries(gameData?.playerData).map(
+                                    (player) => {
+                                        return (
+                                            <pre
+                                                style={{
+                                                    padding: 0,
+                                                    margin: 0,
+                                                }}
+                                                key={player[0]}
+                                            >
+                                                {++count}. {player[1].name}
+                                            </pre>
+                                        );
+                                    }
+                                )}
+                            </Stack>
+                        ) : (
+                            <p>Waiting for players...</p>
+                        )}
+                    </Stack>
 
-                    {gameData && gameData.playerData ? (
-                        <Stack direction="column">
-                            {Object.entries(gameData?.playerData).map(
-                                (player) => {
-                                    return (
-                                        <pre
-                                            style={{ padding: 0, margin: 0 }}
-                                            key={player[0]}
-                                        >
-                                            {++count}. {player[1].name}
-                                        </pre>
-                                    );
-                                }
-                            )}
-                        </Stack>
+                    {gameData ? (
+                        <TypeRacer
+                            gameData={gameData!}
+                            setGameData={setGameData}
+                            user={user}
+                        />
                     ) : (
-                        <p>Waiting for players...</p>
+                        <></>
                     )}
-                </div>
+                </Stack>
             )}
         </div>
     );

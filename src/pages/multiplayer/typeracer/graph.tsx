@@ -5,7 +5,7 @@ import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import firebaseApp from "../../../lib/firebase";
 import { UserData } from "../../../types/user";
-import Character from "./character";
+import Character from "../../../types/character";
 
 interface GraphProps {
     arr: Character[];

@@ -109,8 +109,16 @@ async function joinGame(
         let userData = userDetails.data() as UserData;
         gameData.playerData[props.user.uid] = {
             progress: 0,
-            accuracy: 0,
+            wrongKeys: 0,
+            totalKeys: 0,
             name: userData.name,
+            arr: [
+                {
+                    character: "",
+                    time: Date.now(),
+                    acc: 100,
+                },
+            ],
         };
         await set(dbRef, gameData);
         onDisconnect(
@@ -143,16 +151,32 @@ async function createGame(
     if (snapshot.exists()) {
         createGame(setNotification, setProcessing, props);
     } else if (userDetails.exists()) {
+        let quote = await fetch(
+            "https://api.quotable.io/random?" +
+                new URLSearchParams({
+                    minLength: "50",
+                })
+        );
+        let value = await quote.json();
         await set(dbRef, {
             id: id,
             hostID: props.user.uid,
-            started: false,
-            ended: false,
+            stages: 0,
+            countdown: 4,
+            quote: `"${value.content}" - ${value.author}`,
             playerData: {
                 [props.user.uid]: {
                     progress: 0,
-                    accuracy: 0,
+                    wrongKeys: 0,
+                    totalKeys: 0,
                     name: (userDetails.data() as UserData).name,
+                    arr: [
+                        {
+                            character: "",
+                            time: Date.now(),
+                            acc: 100,
+                        },
+                    ],
                 },
             },
         } as Game);

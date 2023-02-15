@@ -2,9 +2,9 @@ import { Button, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useEffect, useState } from "react";
 import Timer from "../../../components/timer";
-import Character from "./character";
+import Character from "../../../types/character";
 import Graph from "./graph";
-import Stages from "./stages";
+import Stages from "../../../types/stages";
 
 interface TypeRacerProps {
     hostID: string;

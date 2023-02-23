@@ -55,6 +55,10 @@ export default function About() {
                     question="13/14 February"
                     answer="Added functionality for multiplayer, specifically joining of games and game IDs, as well as how every participant will deal with the game. We are able to track each game's data in realtime. Next up, the actual game!"
                 />
+                <FAQComponent
+                    question="23 February"
+                    answer="Completed syncing for a multiplayer game. I have also added progress bars for everyone to track each other's progress, and the game successfully reaches the end screen now. I have also resolved many issues regarding the race conditions :D"
+                />
             </Stack>
         </div>
     );

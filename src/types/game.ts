@@ -6,13 +6,13 @@ export default interface Game {
     stages: number;
     quote: string;
     countdown: number;
-    playerData: {
-        [id: string]: {
-            name: string;
-            progress: number;
-            wrongKeys: number;
-            totalKeys: number;
-            arr: Character[];
-        };
-    };
+    playerData: { [id: string]: PlayerData };
+}
+
+export interface PlayerData {
+    name: string;
+    progress: number;
+    wrongKeys: number;
+    totalKeys: number;
+    arr: Character[];
 }

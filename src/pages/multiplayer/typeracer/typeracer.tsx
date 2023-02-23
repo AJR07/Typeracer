@@ -3,8 +3,9 @@ import { Stack } from "@mui/system";
 import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import Timer from "../../../components/timer";
-import Game from "../../../types/game";
+import Game, { PlayerData } from "../../../types/game";
 import Graph from "./graph";
+import Progress from "./progress";
 
 interface TypeRacerProps {
     gameData: Game;
@@ -14,6 +15,7 @@ interface TypeRacerProps {
 
 export default function TypeRacer(props: TypeRacerProps) {
     let [completedQuote, setCompletedQuote] = useState("");
+    let [progress, setProgress] = useState(0);
 
     useEffect(() => {
         if (props.gameData.stages == 3) return;
@@ -50,6 +52,19 @@ export default function TypeRacer(props: TypeRacerProps) {
                         Time Elapsed: <Timer />
                     </h3>
                 ) : null}
+
+                <Stack id="progress-bars">
+                    {Object.entries(props.gameData.playerData).map((player) => {
+                        return (
+                            <Progress
+                                quoteLength={props.gameData.quote.length}
+                                userData={player[1] as PlayerData}
+                                key={player[0]}
+                            />
+                        );
+                    })}
+                </Stack>
+
                 <Stack id="text-display">
                     <div
                         style={{
@@ -172,31 +187,56 @@ export default function TypeRacer(props: TypeRacerProps) {
                             }
                         }}
                         onChange={(e) => {
-                            // let val = e.target.value;
-                            // let len = val.length;
-                            // setTotalKeys((k) => k + 1);
-                            // if (
-                            //     val == quote.substring(progress, progress + len)
-                            // ) {
-                            //     setProgress((p) => p + len);
-                            //     setCompletedQuote("");
-                            //     setArr((arr) => {
-                            //         let newArr = [...arr];
-                            //         newArr.push({
-                            //             character: quote.substring(
-                            //                 progress,
-                            //                 progress + len
-                            //             ),
-                            //             acc:
-                            //                 100 - (wrongKeys / totalKeys) * 100,
-                            //             time: Date.now(),
-                            //         });
-                            //         return newArr;
-                            //     });
-                            // } else {
-                            //     setCompletedQuote(val);
-                            //     setWrongKeys((k) => k + 1);
-                            // }
+                            let val = e.target.value;
+                            let len = val.length;
+                            if (userData.progress != progress) return;
+                            if (
+                                val ==
+                                props.gameData.quote.substring(
+                                    userData.progress,
+                                    userData.progress + len
+                                )
+                            ) {
+                                setCompletedQuote("");
+                                setProgress((p) => p + len);
+                                props.setGameData((data) => {
+                                    let newData = { ...data } as Game;
+                                    newData.playerData![
+                                        props.user.uid
+                                    ]!.progress = len + progress;
+                                    newData.playerData![
+                                        props.user.uid
+                                    ]!.arr.push({
+                                        character:
+                                            props.gameData.quote.substring(
+                                                userData.progress,
+                                                userData.progress + len
+                                            ),
+                                        acc:
+                                            100 -
+                                            (userData.wrongKeys /
+                                                (userData.totalKeys + 1)) *
+                                                100,
+                                        time: Date.now(),
+                                    });
+                                    newData.playerData![
+                                        props.user.uid
+                                    ]!.totalKeys = userData.totalKeys + 1;
+                                    return newData;
+                                });
+                            } else {
+                                setCompletedQuote(val);
+                                props.setGameData((data) => {
+                                    let newData = { ...data } as Game;
+                                    newData.playerData![
+                                        props.user.uid
+                                    ]!.wrongKeys = userData.wrongKeys + 1;
+                                    newData.playerData![
+                                        props.user.uid
+                                    ]!.totalKeys = userData.totalKeys + 1;
+                                    return newData;
+                                });
+                            }
                         }}
                     ></TextField>
                 ) : (

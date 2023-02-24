@@ -163,7 +163,7 @@ async function createGame(
             hostID: props.user.uid,
             stages: 0,
             countdown: 4,
-            quote: `"${value.content}" - ${value.author}`,
+            quote: `${value.content}`,
             playerData: {
                 [props.user.uid]: {
                     progress: 0,

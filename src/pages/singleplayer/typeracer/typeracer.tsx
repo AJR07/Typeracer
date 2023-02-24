@@ -28,7 +28,7 @@ export default function TypeRacer(props: TypeRacerProps) {
                 })
         ).then((response) => {
             response.json().then((value) => {
-                setQuote(`"${value.content}" - ${value.author}`);
+                setQuote(`${value.content}`);
             });
         });
     }, []);

@@ -17,6 +17,7 @@ export default function MultiPlayer() {
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
     const [gameData, setGameData] = useState<Game | null>(null);
+    const [oldGameData, setOldGameData] = useState<Game | null>(null);
 
     useEffect(() => {
         const dbRef = ref(db, "games/" + gameID);
@@ -29,9 +30,29 @@ export default function MultiPlayer() {
     useEffect(() => {
         // upload
         if (gameData && user) {
-            const dbRef = ref(db, "games/" + gameID);
-            set(dbRef, gameData);
+            let objData = Object.entries(gameData);
+            let changedGlobalVars = false;
+            if (oldGameData) {
+                let objOldData = Object.entries(oldGameData);
+                for (let i = 0; i < objData.length; i++) {
+                    if (objData[i][0] === "playerData") continue;
+                    if (objData[i][1] !== objOldData[i][1]) {
+                        changedGlobalVars = true;
+                    }
+                }
+            } else changedGlobalVars = true;
+            if (changedGlobalVars) {
+                const dbRef = ref(db, "games/" + gameID);
+                set(dbRef, gameData);
+            } else {
+                const dbRef = ref(
+                    db,
+                    "games/" + gameID + "/playerData/" + user.uid
+                );
+                set(dbRef, gameData.playerData[user.uid]);
+            }
         }
+        setOldGameData(gameData);
     }, [gameData]);
 
     if (loading) {

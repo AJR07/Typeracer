@@ -59,6 +59,10 @@ export default function About() {
                     question="23 February"
                     answer="Completed syncing for a multiplayer game. I have also added progress bars for everyone to track each other's progress, and the game successfully reaches the end screen now. I have also resolved many issues regarding the race conditions :D"
                 />
+                <FAQComponent
+                    question="24 February"
+                    answer="MULTIPLAYER DONE! (At least the bare-bones). Race conditions has been resolved, and issues regarding the quotes and author names resulted in me removing them from the quotes!"
+                />
             </Stack>
         </div>
     );

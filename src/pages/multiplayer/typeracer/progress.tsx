@@ -8,7 +8,6 @@ interface ProgressProps {
 }
 
 export default function Progress(props: ProgressProps) {
-    console.log((props.userData.progress / props.quoteLength) * 100);
     return (
         <Stack
             direction="row"

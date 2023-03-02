@@ -5,6 +5,7 @@ import { doc, getFirestore } from "firebase/firestore";
 import { UserDataReceive } from "../../types/user";
 import { Button } from "@mui/material";
 import { useState } from "react";
+import ProfileGraph from "./graphs";
 
 const db = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
@@ -28,7 +29,7 @@ export default function Profile(props: ProfileProps) {
 
     let user = snapshot.data() as UserDataReceive;
     return (
-        <div>
+        <div style={{ width: "100%" }}>
             <h1>Profile of {user.name}</h1>
             <p>
                 Account Creation Date:{" "}
@@ -37,9 +38,9 @@ export default function Profile(props: ProfileProps) {
                 )}
             </p>
             <p>Email: {user.email}</p>
-            <p>WPM: {user.averageWPM}</p>
-            <p>Accuracy: {user.averageAccuracy}</p>
+            <p>ID: {user.uid}</p>
             <p>Games Played: {user.numberOfGamesPlayed}</p>
+            <ProfileGraph ACC={user.averageAccuracy} WPM={user.averageWPM} />
 
             <Button
                 variant="contained"

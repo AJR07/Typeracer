@@ -173,18 +173,19 @@ export default function TypeRacer(props: TypeRacerProps) {
                     </div>
                 ) : props.gameData.stages == 2 ? (
                     <TextField
-                        style={{
-                            backgroundColor: "#ddffdd",
-                            borderRadius: "1vw",
-                            padding: "1vw",
-                            marginRight: "1vw",
-                        }}
+                        style={{ opacity: 0, height: 0 }}
                         value={completedQuote}
+                        autoFocus
+                        id="typeracer-input"
                         onKeyDown={(e) => {
                             // prevent shortcuts
                             if (e.ctrlKey || e.altKey || e.metaKey) {
                                 e.preventDefault();
                             }
+                        }}
+                        onBlur={(e) => {
+                            e.target.focus();
+                            setTimeout(() => e.target.focus(), 100);
                         }}
                         onChange={(e) => {
                             let val = e.target.value;

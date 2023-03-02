@@ -4,8 +4,8 @@ import { getAuth } from "firebase/auth";
 import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import firebaseApp from "../../../lib/firebase";
+import Character from "../../../types/character";
 import { UserData } from "../../../types/user";
-import Character from "./character";
 
 interface GraphProps {
     arr: Character[];
@@ -18,31 +18,22 @@ const auth = getAuth(firebaseApp);
 export default function Graph(props: GraphProps) {
     let [uploadedData, setUploadedData] = useState(false);
     let characterSoFar = 0,
-        cpmArray: number[][] = [],
-        accArray: number[][] = [],
-        spaces = 0;
+        wpmArray: number[][] = [],
+        accArray: number[][] = [];
 
     for (let char of props.arr) {
         characterSoFar += char.character.length;
-        if (cpmArray.length > 0) {
-            let cpm =
-                60 / ((char.time - props.arr[0].time) / 1000 / characterSoFar);
-            cpmArray.push([characterSoFar, Math.round(cpm)]);
+        if (wpmArray.length > 0) {
+            let wpm =
+                60 /
+                ((char.time - props.arr[0].time) / 1000 / (characterSoFar / 5));
+            wpmArray.push([characterSoFar, Math.round(wpm)]);
             let accuracy = Math.round(char.acc);
             accArray.push([characterSoFar, isNaN(accuracy) ? 0 : accuracy]);
         } else {
-            cpmArray.push([0, 0]);
-        }
-        for (let charr of char.character) {
-            if (charr == " ") spaces++;
+            wpmArray.push([0, 0]);
         }
     }
-
-    let wpm =
-        60 /
-        ((props.arr[props.arr.length - 1].time - props.arr[0].time) /
-            1000 /
-            spaces);
 
     useEffect(() => {
         if (uploadedData) return;
@@ -57,7 +48,7 @@ export default function Graph(props: GraphProps) {
                     if (userData === undefined) return;
 
                     let user = userData as UserData;
-                    user.averageWPM.push(wpm);
+                    user.averageWPM.push(wpmArray[wpmArray.length - 1][1]);
                     user.averageAccuracy.push(100 - props.accuracy * 100);
                     user.numberOfGamesPlayed += 1;
                     setDoc(doc(db, "users", uid!), user).catch();
@@ -77,9 +68,9 @@ export default function Graph(props: GraphProps) {
         yAxis: [
             {
                 type: "value",
-                name: "Characters Per Minute",
+                name: "Words Per Minute",
                 axisLabel: {
-                    formatter: "{value} CPM",
+                    formatter: "{value} WPM",
                 },
             },
             {
@@ -95,13 +86,13 @@ export default function Graph(props: GraphProps) {
         ],
         series: [
             {
-                name: "CPM",
+                name: "WPM",
                 tooltip: {
                     valueFormatter: (value: number) => {
-                        return value + " CPM";
+                        return value + " WPM";
                     },
                 },
-                data: cpmArray,
+                data: wpmArray,
                 type: "line",
                 smooth: true,
             },
@@ -134,9 +125,8 @@ export default function Graph(props: GraphProps) {
     return (
         <Stack>
             <h3>
-                WPM: {Math.round(wpm)} Words Per Minute <br />
-                CPM: {Math.round(cpmArray[cpmArray.length - 1][1])} Characters
-                Per Minute <br />
+                WPM: {Math.round(wpmArray[wpmArray.length - 1][1])} Words Per
+                Minute <br />
                 Accuracy: {Math.round(100 - props.accuracy * 100)}% <br />{" "}
             </h3>
             <ReactECharts option={options} />{" "}

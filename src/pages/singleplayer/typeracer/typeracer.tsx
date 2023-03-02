@@ -6,21 +6,18 @@ import Character from "../../../types/character";
 import Graph from "./graph";
 import Stages from "../../../types/stages";
 
-interface TypeRacerProps {
-    hostID: string;
-}
-
-export default function TypeRacer(props: TypeRacerProps) {
+export default function TypeRacer() {
     let [quote, setQuote] = useState("");
     let [progress, setProgress] = useState(0);
     let [completedQuote, setCompletedQuote] = useState("");
     let [countdown, setCountdown] = useState<null | number>(null);
-    let [stages, setStages] = useState<Stages>(1);
+    let [stages, setStages] = useState<Stages>(-1);
     let [arr, setArr] = useState<Character[]>([]);
     let [wrongKeys, setWrongKeys] = useState(0);
     let [totalKeys, setTotalKeys] = useState(0);
 
     useEffect(() => {
+        if (stages !== -1) return;
         fetch(
             "https://api.quotable.io/random?" +
                 new URLSearchParams({
@@ -29,6 +26,7 @@ export default function TypeRacer(props: TypeRacerProps) {
         ).then((response) => {
             response.json().then((value) => {
                 setQuote(`${value.content}`);
+                setStages(1);
             });
         });
     }, []);
@@ -38,7 +36,7 @@ export default function TypeRacer(props: TypeRacerProps) {
     }
 
     return (
-        <div id="typeracer">
+        <div id="typeracer" style={{ paddingRight: "1vw" }}>
             <Stack
                 style={{
                     backgroundColor: "#0d104f",
@@ -82,20 +80,8 @@ export default function TypeRacer(props: TypeRacerProps) {
                                 fontWeight: "bold",
                                 display: "inline",
                             }}
-                        >{`${quote.substring(
-                            progress,
-                            Math.min(
-                                progress + completedQuote.length,
-                                quote.length
-                            )
-                        )}`}</p>
-                        {`${quote.substring(
-                            Math.min(
-                                progress + completedQuote.length,
-                                quote.length
-                            ),
-                            quote.length
-                        )}`}
+                        >{`${completedQuote}`}</p>
+                        {`${quote.substring(progress, quote.length)}`}
                     </p>
                 </Stack>
 
@@ -103,7 +89,7 @@ export default function TypeRacer(props: TypeRacerProps) {
                     <Button
                         variant="contained"
                         onClick={() => {
-                            if (countdown !== null) return;
+                            if (countdown !== null || stages == -1) return;
                             setCountdown(3);
                             setTimeout(() => {
                                 setCountdown(2);
@@ -123,24 +109,35 @@ export default function TypeRacer(props: TypeRacerProps) {
                                 ]);
                             }, 3000);
                         }}
-                        color={countdown !== null ? "error" : "success"}
+                        color={
+                            countdown !== null
+                                ? "error"
+                                : stages == -1
+                                ? "warning"
+                                : "success"
+                        }
                     >
-                        {countdown === null ? "Start" : countdown}
+                        {countdown === null
+                            ? stages == -1
+                                ? "LOADING QUOTE..."
+                                : "START"
+                            : countdown}
                     </Button>
                 ) : stages == 2 ? (
                     <TextField
-                        style={{
-                            backgroundColor: "#ddffdd",
-                            borderRadius: "1vw",
-                            padding: "1vw",
-                            marginRight: "1vw",
-                        }}
+                        style={{ opacity: 0, height: 0 }}
                         value={completedQuote}
+                        autoFocus
+                        id="typeracer-input"
                         onKeyDown={(e) => {
                             // prevent shortcuts
                             if (e.ctrlKey || e.altKey || e.metaKey) {
                                 e.preventDefault();
                             }
+                        }}
+                        onBlur={(e) => {
+                            e.target.focus();
+                            setTimeout(() => e.target.focus(), 100);
                         }}
                         onChange={(e) => {
                             let val = e.target.value;

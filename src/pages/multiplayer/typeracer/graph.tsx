@@ -5,11 +5,11 @@ import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import firebaseApp from "../../../lib/firebase";
 import { UserData } from "../../../types/user";
-import Character from "../../../types/character";
+import { PlayerData } from "../../../types/game";
 
 interface GraphProps {
-    arr: Character[];
-    accuracy: number;
+    playerData: { [id: string]: PlayerData };
+    host: boolean;
 }
 
 const db = getFirestore(firebaseApp);
@@ -17,55 +17,15 @@ const auth = getAuth(firebaseApp);
 
 export default function Graph(props: GraphProps) {
     let [uploadedData, setUploadedData] = useState(false);
-    let characterSoFar = 0,
-        cpmArray: number[][] = [],
-        accArray: number[][] = [],
-        spaces = 0;
-
-    for (let char of props.arr) {
-        characterSoFar += char.character.length;
-        if (cpmArray.length > 0) {
-            let cpm =
-                60 / ((char.time - props.arr[0].time) / 1000 / characterSoFar);
-            cpmArray.push([characterSoFar, Math.round(cpm)]);
-            let accuracy = Math.round(char.acc);
-            accArray.push([characterSoFar, isNaN(accuracy) ? 0 : accuracy]);
-        } else {
-            cpmArray.push([0, 0]);
-        }
-        for (let charr of char.character) {
-            if (charr == " ") spaces++;
-        }
-    }
-
-    let wpm =
-        60 /
-        ((props.arr[props.arr.length - 1].time - props.arr[0].time) /
-            1000 /
-            spaces);
-
-    useEffect(() => {
-        if (uploadedData) return;
-
-        let uid = auth.currentUser?.uid;
-        if (!uid) return;
-        else {
-            setUploadedData(true);
-            getDoc(doc(db, "users", uid))
-                .then((val) => {
-                    let userData = val.data();
-                    if (userData === undefined) return;
-
-                    let user = userData as UserData;
-                    user.averageWPM.push(wpm);
-                    user.averageAccuracy.push(100 - props.accuracy * 100);
-                    user.numberOfGamesPlayed += 1;
-                    setDoc(doc(db, "users", uid!), user).catch();
-                })
-                .catch();
-        }
-    }, []);
-
+    let userWPMArray: number[][] = [],
+        userAccArray: number[][] = [];
+    const series: {
+        name: string;
+        tooltip: { valueFormatter: (value: number) => string };
+        data: number[][];
+        type: string;
+        smooth: true;
+    }[] = [];
     let options = {
         xAxis: {
             name: "Characters Typed",
@@ -77,9 +37,9 @@ export default function Graph(props: GraphProps) {
         yAxis: [
             {
                 type: "value",
-                name: "Characters Per Minute",
+                name: "Words Per Minute",
                 axisLabel: {
-                    formatter: "{value} CPM",
+                    formatter: "{value} WPM",
                 },
             },
             {
@@ -93,30 +53,7 @@ export default function Graph(props: GraphProps) {
                 },
             },
         ],
-        series: [
-            {
-                name: "CPM",
-                tooltip: {
-                    valueFormatter: (value: number) => {
-                        return value + " CPM";
-                    },
-                },
-                data: cpmArray,
-                type: "line",
-                smooth: true,
-            },
-            {
-                name: "Accuracy",
-                tooltip: {
-                    valueFormatter: (value: number) => {
-                        return value + "%";
-                    },
-                },
-                data: accArray,
-                type: "line",
-                smooth: true,
-            },
-        ],
+        series: series,
         tooltip: {
             trigger: "axis",
             axisPointer: {
@@ -131,13 +68,89 @@ export default function Graph(props: GraphProps) {
             },
         },
     };
+
+    for (let playerID in props.playerData) {
+        let playerInfo = props.playerData[playerID];
+        let characterSoFar = 0,
+            wpmArray: number[][] = [],
+            accArray: number[][] = [];
+        for (let char of playerInfo.arr) {
+            characterSoFar += char.character.length;
+            if (wpmArray.length > 0) {
+                let wpm =
+                    60 /
+                    ((char.time - playerInfo.arr[0].time) /
+                        1000 /
+                        (characterSoFar / 5));
+                wpmArray.push([characterSoFar, Math.round(wpm)]);
+                let accuracy = Math.round(char.acc);
+                accArray.push([characterSoFar, isNaN(accuracy) ? 0 : accuracy]);
+            } else {
+                wpmArray.push([0, 0]);
+            }
+        }
+        options.series.push({
+            name: `${playerInfo.name} - WPM`,
+            tooltip: {
+                valueFormatter: (value: number) => {
+                    return value + " WPM";
+                },
+            },
+            data: wpmArray,
+            type: "line",
+            smooth: true,
+        });
+        options.series.push({
+            name: `${playerInfo.name} - Accuracy`,
+            tooltip: {
+                valueFormatter: (value: number) => {
+                    return value + "%";
+                },
+            },
+            data: accArray,
+            type: "line",
+            smooth: true,
+        });
+
+        if (playerID === auth.currentUser?.uid) {
+            userWPMArray = wpmArray;
+            userAccArray = accArray;
+        }
+    }
+
+    useEffect(() => {
+        if (uploadedData || props.host) return;
+
+        let uid = auth.currentUser?.uid;
+        if (!uid) return;
+        else {
+            setUploadedData(true);
+            getDoc(doc(db, "users", uid))
+                .then((val) => {
+                    let userData = val.data();
+                    if (userData === undefined) return;
+
+                    let user = userData as UserData;
+                    user.averageWPM.push(
+                        userWPMArray[userWPMArray.length - 1][1]
+                    );
+                    user.averageAccuracy.push(
+                        userAccArray[userAccArray.length - 1][1]
+                    );
+                    user.numberOfGamesPlayed += 1;
+                    setDoc(doc(db, "users", uid!), user).catch();
+                })
+                .catch();
+        }
+    }, []);
+
     return (
         <Stack>
             <h3>
-                WPM: {Math.round(wpm)} Words Per Minute <br />
-                CPM: {Math.round(cpmArray[cpmArray.length - 1][1])} Characters
-                Per Minute <br />
-                Accuracy: {Math.round(100 - props.accuracy * 100)}% <br />{" "}
+                WPM: {Math.round(userWPMArray[userWPMArray.length - 1][1])}{" "}
+                Words Per Minute <br />
+                Accuracy: {Math.round(userAccArray[userAccArray.length - 1][1])}
+                % <br />{" "}
             </h3>
             <ReactECharts option={options} />{" "}
         </Stack>

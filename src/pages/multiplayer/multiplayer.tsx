@@ -1,6 +1,6 @@
 import { Button, Stack } from "@mui/material";
 import { getAuth } from "firebase/auth";
-import { getDatabase, onValue, ref, set } from "firebase/database";
+import { get, getDatabase, onValue, ref, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
@@ -16,8 +16,27 @@ export default function MultiPlayer() {
     const [gameID, setGameID] = useState<string | null>(null);
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
+    const [publicGameData, setPublicGameData] = useState<{
+        [id: string]: Game;
+    }>({});
     const [gameData, setGameData] = useState<Game | null>(null);
     const [oldGameData, setOldGameData] = useState<Game | null>(null);
+
+    useEffect(() => {
+        const publicRef = ref(db, "games/");
+        onValue(publicRef, (snapshot) => {
+            if (!snapshot.exists()) setPublicGameData({});
+            else {
+                setPublicGameData(snapshot.val());
+            }
+        });
+        get(publicRef).then((snapshot) => {
+            if (!snapshot.exists()) setPublicGameData({});
+            else {
+                setPublicGameData(snapshot.val());
+            }
+        });
+    }, []);
 
     useEffect(() => {
         const dbRef = ref(db, "games/" + gameID);
@@ -82,7 +101,33 @@ export default function MultiPlayer() {
         <div id="multiplayer" style={{ width: "100%" }}>
             <h1 style={{ textAlign: "center" }}>Multiplayer</h1>
             {!gameID ? (
-                <JoinGame setGameID={setGameID} user={user} />
+                <Stack spacing={5}>
+                    <JoinGame setGameID={setGameID} user={user} />
+                    <Stack
+                        direction="column"
+                        sx={{
+                            backgroundColor: "lightblue",
+                            borderRadius: "1vw",
+                            padding: "1vw",
+                        }}
+                    >
+                        <h2 style={{ color: "black" }}>Public Games</h2>
+                        {Object.entries(publicGameData).map((gameID) => {
+                            return (
+                                <p style={{ color: "black" }}>
+                                    {gameID[0]}:{" "}
+                                    {Object.entries(gameID[1].playerData).map(
+                                        (player, playerID) => {
+                                            return playerID != 0
+                                                ? ","
+                                                : player[1].name;
+                                        }
+                                    )}
+                                </p>
+                            );
+                        })}
+                    </Stack>
+                </Stack>
             ) : (
                 <Stack spacing={2}>
                     <Stack direction="column">

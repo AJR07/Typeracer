@@ -64,8 +64,12 @@ export default function About() {
                     answer="MULTIPLAYER DONE! (At least the bare-bones). Race conditions has been resolved, and issues regarding the quotes and author names resulted in me removing them from the quotes!"
                 />
                 <FAQComponent
-                    question="2 March - Part I"
+                    question="2 March"
                     answer="Bug fixes... performance improvements! 1. Profile Graph added, profile page tidied. 2. Singleplayer - Loading quote notification, removing calculation of characters per minute, and following standard 1 word = 5 characters calculation for WPM, hiding of text box and persistent selection of text box, adding wrong sentence that was typed as 'red', tidying up of home screen, and UI improvements. Press 'TAB' to reload new game!"
+                />
+                <FAQComponent
+                    question="7 March"
+                    answer="Bug fixes for singleplayer. For multiplayer, added the ability to publicly view games, improved collaboration when playing together, and significantly improved and updated the end screen for multiplayer! Lets Go, I think we are done!"
                 />
             </Stack>
         </div>

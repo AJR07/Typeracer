@@ -15,6 +15,7 @@ export default function App() {
                 <Stack direction="row" spacing={3}>
                     <NavigationBar />
                     <Routes>
+                        <Route path="/" element={<Home />} />
                         <Route path="/home" element={<Home />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/profile" element={<SignInOrUp />} />

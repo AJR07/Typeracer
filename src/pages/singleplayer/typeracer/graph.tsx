@@ -25,8 +25,9 @@ export default function Graph(props: GraphProps) {
         characterSoFar += char.character.length;
         if (wpmArray.length > 0) {
             let wpm =
-                60 /
-                ((char.time - props.arr[0].time) / 1000 / (characterSoFar / 5));
+                characterSoFar /
+                5 /
+                ((char.time - props.arr[0].time) / 1000 / 60);
             wpmArray.push([characterSoFar, Math.round(wpm)]);
             let accuracy = Math.round(char.acc);
             accArray.push([characterSoFar, isNaN(accuracy) ? 0 : accuracy]);

@@ -109,8 +109,7 @@ export default function Graph(props: GraphProps) {
                 let wpm =
                     characterSoFar /
                     5 /
-                    ((char.time - playerInfo.arr[0].time) / 1000) /
-                    60;
+                    ((char.time - playerInfo.arr[0].time) / 1000 / 60);
                 wpmArray.push([characterSoFar, Math.round(wpm)]);
                 let accuracy = Math.round(char.acc);
                 accArray.push([characterSoFar, isNaN(accuracy) ? 0 : accuracy]);

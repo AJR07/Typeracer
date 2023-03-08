@@ -71,6 +71,10 @@ export default function About() {
                     question="7 March"
                     answer="Bug fixes for singleplayer. For multiplayer, added the ability to publicly view games, improved collaboration when playing together, and significantly improved and updated the end screen for multiplayer! Lets Go, I think we are done!"
                 />
+                <FAQComponent
+                    question="7 March"
+                    answer="Most major issues have been addressed, including UI issues. A home page has been added, with bubbles! The icons at the side has been changed to reflect the actual page. Graphs have been split into 2 when I saw fit, so that its not a clunked mess. It's basically done :D"
+                />
             </Stack>
         </div>
     );

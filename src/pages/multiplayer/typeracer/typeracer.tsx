@@ -241,10 +241,7 @@ export default function TypeRacer(props: TypeRacerProps) {
                         }}
                     ></TextField>
                 ) : (
-                    <Graph
-                        host={checkHost(props.gameData, props.user)}
-                        playerData={props.gameData.playerData}
-                    />
+                    <Graph playerData={props.gameData.playerData} />
                 )}
             </Stack>
         </div>

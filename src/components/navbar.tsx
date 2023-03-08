@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 import InfoIcon from "@mui/icons-material/Info";
 import PersonIcon from "@mui/icons-material/Person";
-import KeyboardIcon from "@mui/icons-material/Keyboard";
-import KeyboardAltIcon from "@mui/icons-material/KeyboardAlt";
+import GroupsIcon from "@mui/icons-material/Groups";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
 interface NavBarButtonProps {
     to: string;
@@ -63,17 +63,17 @@ export default function NavigationBar() {
                 <NavBarButton
                     navigate={navigate}
                     to="singleplayer"
-                    icon={KeyboardIcon}
+                    icon={PersonIcon}
                 />
                 <NavBarButton
                     navigate={navigate}
                     to="multiplayer"
-                    icon={KeyboardAltIcon}
+                    icon={GroupsIcon}
                 />
                 <NavBarButton
                     navigate={navigate}
                     to="profile"
-                    icon={PersonIcon}
+                    icon={AccountBoxIcon}
                 />
                 <NavBarButton navigate={navigate} to="about" icon={InfoIcon} />
             </Stack>

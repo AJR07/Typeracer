@@ -55,6 +55,8 @@ export default function Profile(props: ProfileProps) {
             <p hidden={notification === ""} style={{ color: "red" }}>
                 {notification}
             </p>
+            <br />
+            <br />
         </div>
     );
 }

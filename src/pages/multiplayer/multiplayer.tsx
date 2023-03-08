@@ -98,7 +98,7 @@ export default function MultiPlayer() {
 
     let count = 0;
     return (
-        <div id="multiplayer" style={{ width: "100%" }}>
+        <div id="multiplayer" style={{ width: "97%", marginRight: "3%" }}>
             <h1 style={{ textAlign: "center" }}>Multiplayer</h1>
             {!gameID ? (
                 <Stack spacing={5}>

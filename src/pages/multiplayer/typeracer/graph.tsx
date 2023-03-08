@@ -9,7 +9,6 @@ import { PlayerData } from "../../../types/game";
 
 interface GraphProps {
     playerData: { [id: string]: PlayerData };
-    host: boolean;
 }
 
 const db = getFirestore(firebaseApp);
@@ -20,29 +19,60 @@ export default function Graph(props: GraphProps) {
     let userWPMArray: number[][] = [],
         userAccArray: number[][] = [];
     const series: {
-        name: string;
-        tooltip: { valueFormatter: (value: number) => string };
-        data: number[][];
-        type: string;
-        smooth: true;
-    }[] = [];
-    let options = {
-        xAxis: {
-            name: "Characters Typed",
-            type: "value",
-            axisLabel: {
-                formatter: "{value} Characters",
-            },
-        },
-        yAxis: [
-            {
+            name: string;
+            tooltip: { valueFormatter: (value: number) => string };
+            data: number[][];
+            type: string;
+            smooth: true;
+        }[] = [],
+        series2: {
+            name: string;
+            tooltip: { valueFormatter: (value: number) => string };
+            data: number[][];
+            type: string;
+            smooth: true;
+        }[] = [];
+    let options1 = {
+            xAxis: {
+                name: "Characters Typed",
                 type: "value",
-                name: "Words Per Minute",
                 axisLabel: {
-                    formatter: "{value} WPM",
+                    formatter: "{value} Characters",
                 },
             },
-            {
+            yAxis: [
+                {
+                    type: "value",
+                    name: "Words Per Minute",
+                    axisLabel: {
+                        formatter: "{value} WPM",
+                    },
+                },
+            ],
+            series: series,
+            tooltip: {
+                trigger: "axis",
+                axisPointer: {
+                    type: "cross",
+                },
+            },
+            toolbox: {
+                feature: {
+                    dataView: { show: true, readOnly: false },
+                    magicType: { show: true, type: ["line", "bar"] },
+                    saveAsImage: { show: true },
+                },
+            },
+        },
+        options2 = {
+            xAxis: {
+                name: "Characters Typed",
+                type: "value",
+                axisLabel: {
+                    formatter: "{value} Characters",
+                },
+            },
+            yAxis: {
                 type: "value",
                 name: "Accuracy",
                 min: 0,
@@ -52,22 +82,21 @@ export default function Graph(props: GraphProps) {
                     formatter: "{value}%",
                 },
             },
-        ],
-        series: series,
-        tooltip: {
-            trigger: "axis",
-            axisPointer: {
-                type: "cross",
+            series: series2,
+            tooltip: {
+                trigger: "axis",
+                axisPointer: {
+                    type: "cross",
+                },
             },
-        },
-        toolbox: {
-            feature: {
-                dataView: { show: true, readOnly: false },
-                magicType: { show: true, type: ["line", "bar"] },
-                saveAsImage: { show: true },
+            toolbox: {
+                feature: {
+                    dataView: { show: true, readOnly: false },
+                    magicType: { show: true, type: ["line", "bar"] },
+                    saveAsImage: { show: true },
+                },
             },
-        },
-    };
+        };
 
     for (let playerID in props.playerData) {
         let playerInfo = props.playerData[playerID];
@@ -78,10 +107,10 @@ export default function Graph(props: GraphProps) {
             characterSoFar += char.character.length;
             if (wpmArray.length > 0) {
                 let wpm =
-                    60 /
-                    ((char.time - playerInfo.arr[0].time) /
-                        1000 /
-                        (characterSoFar / 5));
+                    characterSoFar /
+                    5 /
+                    ((char.time - playerInfo.arr[0].time) / 1000) /
+                    60;
                 wpmArray.push([characterSoFar, Math.round(wpm)]);
                 let accuracy = Math.round(char.acc);
                 accArray.push([characterSoFar, isNaN(accuracy) ? 0 : accuracy]);
@@ -89,7 +118,7 @@ export default function Graph(props: GraphProps) {
                 wpmArray.push([0, 0]);
             }
         }
-        options.series.push({
+        options1.series.push({
             name: `${playerInfo.name} - WPM`,
             tooltip: {
                 valueFormatter: (value: number) => {
@@ -100,7 +129,7 @@ export default function Graph(props: GraphProps) {
             type: "line",
             smooth: true,
         });
-        options.series.push({
+        options2.series.push({
             name: `${playerInfo.name} - Accuracy`,
             tooltip: {
                 valueFormatter: (value: number) => {
@@ -119,7 +148,7 @@ export default function Graph(props: GraphProps) {
     }
 
     useEffect(() => {
-        if (uploadedData || props.host) return;
+        if (uploadedData) return;
 
         let uid = auth.currentUser?.uid;
         if (!uid) return;
@@ -152,7 +181,8 @@ export default function Graph(props: GraphProps) {
                 Accuracy: {Math.round(userAccArray[userAccArray.length - 1][1])}
                 % <br />{" "}
             </h3>
-            <ReactECharts option={options} />{" "}
+            <ReactECharts option={options1} />
+            <ReactECharts option={options2} />
         </Stack>
     );
 }

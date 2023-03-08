@@ -149,10 +149,22 @@ export default function TypeRacer(props: TypeRacerProps) {
                                     });
                                 }, 3000);
                                 setTimeout(() => {
-                                    props.setGameData({
-                                        ...props.gameData,
-                                        countdown: 0,
-                                        stages: 2,
+                                    props.setGameData((data) => {
+                                        let newData = { ...(data as Game) };
+                                        for (let player of Object.entries(
+                                            newData.playerData
+                                        )) {
+                                            player[1].arr = [
+                                                {
+                                                    time: Date.now(),
+                                                    character: "",
+                                                    acc: 0,
+                                                },
+                                            ];
+                                        }
+                                        newData.countdown = 0;
+                                        newData.stages = 2;
+                                        return newData;
                                     });
                                 }, 4000);
                             }}

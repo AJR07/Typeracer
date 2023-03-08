@@ -112,13 +112,7 @@ async function joinGame(
             wrongKeys: 0,
             totalKeys: 0,
             name: userData.name,
-            arr: [
-                {
-                    character: "",
-                    time: Date.now(),
-                    acc: 100,
-                },
-            ],
+            arr: [],
         };
         await set(dbRef, gameData);
         onDisconnect(
@@ -170,13 +164,7 @@ async function createGame(
                     wrongKeys: 0,
                     totalKeys: 0,
                     name: (userDetails.data() as UserData).name,
-                    arr: [
-                        {
-                            character: "",
-                            time: Date.now(),
-                            acc: 100,
-                        },
-                    ],
+                    arr: [],
                 },
             },
         } as Game);

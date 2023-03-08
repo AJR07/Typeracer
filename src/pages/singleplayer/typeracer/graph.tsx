@@ -130,7 +130,7 @@ export default function Graph(props: GraphProps) {
             <h3>
                 WPM: {Math.round(wpmArray[wpmArray.length - 1][1])} Words Per
                 Minute <br />
-                Accuracy: {Math.round(100 - props.accuracy * 100)}% <br />{" "}
+                Accuracy: {Math.round(100 - props.accuracy * 100)}%
             </h3>
             <ReactECharts option={options} />{" "}
         </Stack>

@@ -1,5 +1,5 @@
 import { Stack } from "@mui/system";
-import Bubble from "./bubbles";
+import Bubble from "../../components/bubbles";
 
 export default function Home() {
     return (

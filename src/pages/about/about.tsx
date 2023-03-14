@@ -1,7 +1,15 @@
 import { Stack } from "@mui/system";
 import FAQComponent from "../../components/faq";
 
+/**
+ * THe about page that displays the project details and the development details
+ *
+ * @export
+ * @returns {*}
+ */
 export default function About() {
+    // each FAQComponent is a dropdown that displays the title and the answer/elaboration
+    // it is split to several sections
     return (
         <div id="about" style={{ width: "100%" }}>
             <h1 style={{ textAlign: "center" }}>Project Details</h1>
@@ -90,6 +98,28 @@ export default function About() {
                 />
             </Stack>
             <h1 style={{ textAlign: "center" }}>Final Writeup</h1>
+            <Stack direction="column" style={{ padding: "1vw" }}>
+                <FAQComponent
+                    question="Link to codebase:"
+                    answer="https://github.com/AJR07/Typeracer"
+                />
+                <FAQComponent
+                    question="Link to this website:"
+                    answer="(In case you somehow couldn't find it) https://typeracer-ajr07.web.app/"
+                />
+                <FAQComponent
+                    question="What challenges did I meet?"
+                    answer="There were many issues that I encountered when constructing the multiplayer. Many of them were due to race-conditions (something that happens when two devices send updates at the same time, and one overwrites another even though they didn't mean to). Furthermore, I was trying to implement the app's logic only on the client-side as a challenge, and that meant I could not solve this directly from firebase itself. This means I had to add a bunch of logic in the uploading of data to make sure things didn't override each other. I also encountered another issue when updating of the data in each client's devices was scuffed. For example, if someone would type a character, it would upload it to the server, and redownload it back to the client's computer. By that time, the client might have typed 1 more character, but that would be erased. There was some logic needed to be added to fix that. Most of the challenges was definitely in the statistics tracking and display, and multiplayer part of the app."
+                />
+                <FAQComponent
+                    question="What am I proud of?"
+                    answer="I have finally managed to do multiplayer! I tried it a few times with other apps such as Chess App, but my code became way too complicated. This time I actually planned out how I wanted to do things and was able to pull it off, and produced something fairly reliable! Lets go! :D I am also proud of the fact I was able to make a fairly simple authentication system, that was able to reliable track all of the user's statistics and wasn't too invasive. (At least that's what I think)"
+                />
+                <FAQComponent
+                    question="What would I do differently/Future works?"
+                    answer="I think I would have preferred if I went for a more unqiue clone/idea, rather than going for the same typeracer that is everywhere on the internet. For example, I could try to gamify this whole thing with words flying about. However, I didn't end up doing that, and it could be future work I guess. Either way, I think this project is more or less done as it is, the few things I could add include: 1. Racing against your personal score, 2. Custom words, 3. Custom themes, 4. Include other customisations added in monkeytype. Other than that, I am quite satisfied with the current product :D"
+                />
+            </Stack>
         </div>
     );
 }

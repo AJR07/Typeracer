@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Stages enum
+ *
+ * @enum {number}
+ */
 enum Stages {
     ERROR = -1,
     STARTING = 1,

@@ -7,12 +7,39 @@ import PersonIcon from "@mui/icons-material/Person";
 import GroupsIcon from "@mui/icons-material/Groups";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
+/**
+ * Description placeholder
+ *
+ * @interface NavBarButtonProps
+ * @typedef {NavBarButtonProps}
+ */
 interface NavBarButtonProps {
+    /**
+     * Description placeholder
+     *
+     * @type {string}
+     */
     to: string;
+    /**
+     * Description placeholder
+     *
+     * @type {OverridableComponent<SvgIconTypeMap<{}, "svg">>}
+     */
     icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
+    /**
+     * Description placeholder
+     *
+     * @type {NavigateFunction}
+     */
     navigate: NavigateFunction;
 }
 
+/**
+ * Description placeholder
+ *
+ * @param {NavBarButtonProps} props
+ * @returns {*}
+ */
 function NavBarButton(props: NavBarButtonProps) {
     return (
         <motion.div>
@@ -33,6 +60,12 @@ function NavBarButton(props: NavBarButtonProps) {
     );
 }
 
+/**
+ * Description placeholder
+ *
+ * @export
+ * @returns {*}
+ */
 export default function NavigationBar() {
     const navigate = useNavigate();
     return (

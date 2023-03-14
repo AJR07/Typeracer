@@ -4,7 +4,20 @@ import FAQComponent from "../../components/faq";
 export default function About() {
     return (
         <div id="about" style={{ width: "100%" }}>
-            <h1 style={{ textAlign: "center" }}>About & FAQ</h1>
+            <h1 style={{ textAlign: "center" }}>Project Details</h1>
+            <Stack direction="column" style={{ padding: "1vw" }}>
+                <FAQComponent
+                    question="Codebase"
+                    answer="Open Source, hosted on Github: https://github.com/AJR07/Typeracer"
+                />
+                <FAQComponent
+                    question="Development Phase"
+                    answer="24 January - 14 March 2023"
+                />
+            </Stack>
+            <h1 style={{ textAlign: "center" }}>
+                About & Project Development Details
+            </h1>
             <Stack direction="column" style={{ padding: "1vw" }}>
                 <FAQComponent
                     question="About"
@@ -17,7 +30,7 @@ export default function About() {
                 <FAQComponent
                     question="What are the goals?"
                     answer="The goal of this project is to include the following: Authentication, Statistics for users (during game and in general), Single-player (where you can practice against your best WPM), Multi-player (where you can practice against other users).
-          The concepts required to accomplish this task is primarily animation, routing, authentication, database management, and state management. In particular, database management for multiplayer apps is new to me. :D"
+          The concepts required to accomplish this task is primarily animation, routing, authentication, realtime database management, and state management. In particular, realtime database management for multiplayer apps is new to me. :D I envision it to be a game where you can practice your typing skills, and also compete against other users easily."
                 />
                 <FAQComponent
                     question="What is the work schedule?"
@@ -72,10 +85,11 @@ export default function About() {
                     answer="Bug fixes for singleplayer. For multiplayer, added the ability to publicly view games, improved collaboration when playing together, and significantly improved and updated the end screen for multiplayer! Lets Go, I think we are done!"
                 />
                 <FAQComponent
-                    question="7 March"
+                    question="8 March"
                     answer="Most major issues have been addressed, including UI issues. A home page has been added, with bubbles! The icons at the side has been changed to reflect the actual page. Graphs have been split into 2 when I saw fit, so that its not a clunked mess. It's basically done :D"
                 />
             </Stack>
+            <h1 style={{ textAlign: "center" }}>Final Writeup</h1>
         </div>
     );
 }

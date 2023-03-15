@@ -8,11 +8,19 @@ import Home from "./home/home";
 import MultiPlayer from "./multiplayer/multiplayer";
 import SinglePlayer from "./singleplayer/singleplayer";
 
+/**
+ * The App component - the main component that is rendered (that renders all other pages)
+ *
+ * @export
+ * @returns {*}
+ */
 export default function App() {
+    // using react-router, we can render different pages based on the URL
     return (
         <div id="app">
             <BrowserRouter>
                 <Stack direction="row" spacing={3}>
+                    {/* Hook the navigation bar up so it appears for all pages  */}
                     <NavigationBar />
                     <Routes>
                         <Route path="/" element={<Home />} />

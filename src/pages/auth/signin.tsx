@@ -5,13 +5,26 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import firebaseApp from "../../lib/firebase";
 
+/**
+ * Auth of the current app
+ *
+ * @type {*}
+ */
 const auth = getAuth(firebaseApp);
 
+/**
+ * Component to manage the signing in of users
+ *
+ * @export
+ * @returns {*}
+ */
 export default function SignIn() {
+    // state variables: stores the email, password and notification message
     let [email, setEmail] = useState("");
     let [password, setPassword] = useState("");
     let [notification, setNotification] = useState("");
 
+    // styling the sign in page, includes a button to sign in, a text field for the email and a text field for the password
     return (
         <motion.div
             style={{

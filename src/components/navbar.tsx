@@ -8,26 +8,26 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 
 /**
- * Description placeholder
+ * Navigation bar component props, used to show the details of each button on the navigation bar
  *
  * @interface NavBarButtonProps
  * @typedef {NavBarButtonProps}
  */
 interface NavBarButtonProps {
     /**
-     * Description placeholder
+     * Shows the url to be navigated to
      *
      * @type {string}
      */
     to: string;
     /**
-     * Description placeholder
+     * Shows the icon to be displayed (From MUI)
      *
      * @type {OverridableComponent<SvgIconTypeMap<{}, "svg">>}
      */
     icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
     /**
-     * Description placeholder
+     * Allows the component to navigate to a different page
      *
      * @type {NavigateFunction}
      */
@@ -35,12 +35,15 @@ interface NavBarButtonProps {
 }
 
 /**
- * Description placeholder
+ * Navigation bar button component - displays a button on the navigation bar
  *
  * @param {NavBarButtonProps} props
  * @returns {*}
  */
 function NavBarButton(props: NavBarButtonProps) {
+    // uses the "to" property to navigate to the specified page
+    // uses the "icon" property to display the specified icon
+    // uses the "navigate" function to navigate to the specified page
     return (
         <motion.div>
             <IconButton
@@ -61,13 +64,15 @@ function NavBarButton(props: NavBarButtonProps) {
 }
 
 /**
- * Description placeholder
+ * Navigation bar component - displays the navigation bar on the left side of the screen
  *
  * @export
  * @returns {*}
  */
 export default function NavigationBar() {
+    // a hook that allows the component to navigate to a different page
     const navigate = useNavigate();
+
     return (
         <motion.div
             id="navbar"

@@ -1,12 +1,36 @@
 import { Stack } from "@mui/system";
 import ReactECharts from "echarts-for-react";
 
+/**
+ * Props for the graph component - so it can display the user's WPM and Accuracy history
+ *
+ * @interface GraphProps
+ * @typedef {GraphProps}
+ */
 interface GraphProps {
+    /**
+     * The user's WPM History
+     *
+     * @type {number[]}
+     */
     WPM: number[];
+    /**
+     * The user's Accuracy History
+     *
+     * @type {number[]}
+     */
     ACC: number[];
 }
 
+/**
+ * The Graph Component - Displays the user's WPM and Accuracy history
+ *
+ * @export
+ * @param {GraphProps} props
+ * @returns {*}
+ */
 export default function ProfileGraph(props: GraphProps) {
+    // using JS Map to parse WPM and Accuracy
     let parsedWPM = props.WPM.map((value, index) => {
         return [index, value];
     });
@@ -14,6 +38,8 @@ export default function ProfileGraph(props: GraphProps) {
         return [index, value];
     });
 
+    // 2 "options" variables so that we can customise the look of the graphs
+    // 1 option variable for WPM and 1 for Accuracy
     let options1 = {
             xAxis: {
                 name: "Games Games",
@@ -96,6 +122,8 @@ export default function ProfileGraph(props: GraphProps) {
                 },
             },
         };
+
+    // parse those options variables to ReactECharts so it can process and display it for us.
     return (
         <Stack>
             <h3>Account Progress</h3>

@@ -11,17 +11,37 @@ import firebaseApp from "../../lib/firebase";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { UserData } from "../../types/user";
 
+/**
+ * Auth of the current app
+ *
+ * @type {*}
+ */
 const auth = getAuth(firebaseApp);
+/**
+ * Reference to the firestore database (long term storage of user data)
+ *
+ * @type {*}
+ */
 const db = getFirestore(firebaseApp);
 
+/**
+ * Function to manage the signing up of users, using their email and password
+ *
+ * @param {string} name
+ * @param {string} email
+ * @param {string} password
+ * @param {React.Dispatch<React.SetStateAction<string>>} setNotification
+ */
 function SignUpWithEmailPassword(
     name: string,
     email: string,
     password: string,
     setNotification: React.Dispatch<React.SetStateAction<string>>
 ) {
+    // Create the user with the email and password, using Firebase Auth
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
+            // if the user is successfully created, add their details to the database
             setDoc(doc(db, "users", userCredential.user.uid), {
                 name: name,
                 email: email,
@@ -31,19 +51,27 @@ function SignUpWithEmailPassword(
                 averageAccuracy: [],
                 numberOfGamesPlayed: 0,
             } as UserData).catch(() => {
+                // if there is an error, show an error message
                 setNotification("An error has occurred.");
                 signOut(auth);
             });
         })
         .catch((error) => {
-            console.log(error);
+            // if there is an error, show an error message
             setNotification(
                 "An error has occurred. Please ensure that your email is valid and your password is strong."
             );
         });
 }
 
+/**
+ * The Sign Up Component - Displays the sign up form
+ *
+ * @export
+ * @returns {*}
+ */
 export default function SignUp() {
+    // state variables: stores the user's details, and the notification message
     let [name, setName] = useState("");
     let [email, setEmail] = useState("");
     let [password, setPassword] = useState("");
@@ -51,6 +79,7 @@ export default function SignUp() {
     let [notification, setNotification] = useState("");
 
     useEffect(() => {
+        // if there is a notification message, show it for 5 seconds, after which remove it
         if (notification !== "") {
             setTimeout(() => {
                 setNotification("");
@@ -58,6 +87,8 @@ export default function SignUp() {
         }
     }, [notification]);
 
+    // show the sign up form - with the notification message if there is one
+    // consists of: name, email, password, confirm password text fields, and a sign up button
     return (
         <motion.div
             style={{
@@ -84,6 +115,7 @@ export default function SignUp() {
                         If you don't have an account.
                     </p>
                 </div>
+                {/* Create text-fields that update state variables to track details of user input */}
                 <TextField
                     label="Name"
                     style={{ width: "80vw" }}
@@ -124,6 +156,7 @@ export default function SignUp() {
                     style={{ marginBottom: "1vw" }}
                     onClick={() => {
                         if (password === confirmPassword) {
+                            // if the passwords match, sign up the user
                             SignUpWithEmailPassword(
                                 name,
                                 email,
@@ -131,6 +164,7 @@ export default function SignUp() {
                                 setNotification
                             );
                         } else {
+                            // if the passwords do not match, show an error message
                             setNotification(
                                 "Your passwords do not match. Please try again."
                             );

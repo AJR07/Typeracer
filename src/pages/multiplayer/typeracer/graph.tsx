@@ -7,17 +7,51 @@ import firebaseApp from "../../../lib/firebase";
 import { UserData } from "../../../types/user";
 import { PlayerData } from "../../../types/game";
 
+/**
+ * Props for the graph component
+ *
+ * @interface GraphProps
+ * @typedef {GraphProps}
+ */
 interface GraphProps {
+    /**
+     * player data to be displayed on the graph
+     *
+     * @type {{ [id: string]: PlayerData }}
+     */
     playerData: { [id: string]: PlayerData };
 }
 
+/**
+ * Firestore - Database that stores user data in the long term
+ *
+ * @type {*}
+ */
 const db = getFirestore(firebaseApp);
+/**
+ * Authentication - Firebase's authentication service
+ *
+ * @type {*}
+ */
 const auth = getAuth(firebaseApp);
 
+/**
+ * Graph component that shows the progress of the WPM and accuracy of the users
+ * Also responsible for uploading the results to the web
+ *
+ * @export
+ * @param {GraphProps} props
+ * @returns {*}
+ */
 export default function Graph(props: GraphProps) {
+    // State variables that track if the data has been uploaded
     let [uploadedData, setUploadedData] = useState(false);
+
+    // variables to store the users WPM and accuracy of the current user
     let userWPMArray: number[][] = [],
         userAccArray: number[][] = [];
+
+    // constants to be used in options1 and 2
     const series: {
             name: string;
             tooltip: { valueFormatter: (value: number) => string };
@@ -32,6 +66,9 @@ export default function Graph(props: GraphProps) {
             type: string;
             smooth: true;
         }[] = [];
+
+    // stores the configurations of the WPM and Accuracy graphs that we want to display
+    // we are using a cartesian graph system
     let options1 = {
             xAxis: {
                 name: "Characters Typed",
@@ -98,25 +135,34 @@ export default function Graph(props: GraphProps) {
             },
         };
 
+    // loops through the player data and adds the data to the graph
     for (let playerID in props.playerData) {
         let playerInfo = props.playerData[playerID];
+        // tracks the number of characters typed so far
         let characterSoFar = 0,
             wpmArray: number[][] = [],
             accArray: number[][] = [];
+
+        // loops through the array of characters typed and adds the data to the graph
         for (let char of playerInfo.arr) {
             characterSoFar += char.character.length;
             if (wpmArray.length > 0) {
+                // WPM calculations
                 let wpm =
                     characterSoFar /
                     5 /
                     ((char.time - playerInfo.arr[0].time) / 1000 / 60);
                 wpmArray.push([characterSoFar, Math.round(wpm)]);
+
+                // accuracy calculations
                 let accuracy = Math.round(char.acc);
                 accArray.push([characterSoFar, isNaN(accuracy) ? 0 : accuracy]);
             } else {
+                // initial WPM coordinates
                 wpmArray.push([0, 0]);
             }
         }
+        // add the user's WPM and accuracy to the graph
         options1.series.push({
             name: `${playerInfo.name} - WPM`,
             tooltip: {
@@ -140,21 +186,27 @@ export default function Graph(props: GraphProps) {
             smooth: true,
         });
 
+        // if the player that we are processing is the current user, store the data in the userWPMArray and userAccArray
         if (playerID === auth.currentUser?.uid) {
             userWPMArray = wpmArray;
             userAccArray = accArray;
         }
     }
 
+    // upload the data to the database
     useEffect(() => {
+        // don't upload if it has been uploaded
         if (uploadedData) return;
 
         let uid = auth.currentUser?.uid;
         if (!uid) return;
         else {
+            // set the uploadedData to true so that we don't upload the data again
             setUploadedData(true);
+            // upload the data
             getDoc(doc(db, "users", uid))
                 .then((val) => {
+                    // parse the user's data to add it to the history of the user
                     let userData = val.data();
                     if (userData === undefined) return;
 
@@ -165,13 +217,16 @@ export default function Graph(props: GraphProps) {
                     user.averageAccuracy.push(
                         userAccArray[userAccArray.length - 1][1]
                     );
+                    // increment the number of games played
                     user.numberOfGamesPlayed += 1;
+                    // update the user's data
                     setDoc(doc(db, "users", uid!), user).catch();
                 })
                 .catch();
         }
     }, []);
 
+    // display the data!
     return (
         <Stack>
             <h3>

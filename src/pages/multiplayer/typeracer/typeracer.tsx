@@ -269,6 +269,12 @@ export default function TypeRacer(props: TypeRacerProps) {
                                     userData.progress + len
                                 )
                             ) {
+                                let audio = new Audio(
+                                    `/audio/typing/Audio${Math.floor(
+                                        Math.random() * 6 + 1
+                                    )}.mp3`
+                                );
+                                audio.play();
                                 // reset the text in the current text field
                                 setCompletedQuote("");
                                 // update the progress of the user
@@ -303,6 +309,8 @@ export default function TypeRacer(props: TypeRacerProps) {
                                     return newData;
                                 });
                             } else {
+                                let audio = new Audio(`/audio/error.mp3`);
+                                audio.play();
                                 // if the user's input is wrong, we update the completed quote state, but we also add it to the wrong keys
                                 setCompletedQuote(val);
                                 // update the game data in the database

@@ -178,6 +178,12 @@ export default function TypeRacer() {
                             if (
                                 val == quote.substring(progress, progress + len)
                             ) {
+                                let audio = new Audio(
+                                    `/audio/typing/Audio${Math.floor(
+                                        Math.random() * 6 + 1
+                                    )}.mp3`
+                                );
+                                audio.play();
                                 // update all the game's state variables
                                 setProgress((p) => p + len);
                                 setCompletedQuote("");
@@ -196,6 +202,8 @@ export default function TypeRacer() {
                                     return newArr;
                                 });
                             } else {
+                                let audio = new Audio(`/audio/error.mp3`);
+                                audio.play();
                                 // if the user has typed the wrong character, then update the completed quote and add the character to the array of characters
                                 setCompletedQuote(val);
                                 setWrongKeys((k) => k + 1);

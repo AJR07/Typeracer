@@ -96,6 +96,10 @@ export default function About() {
                     question="8 March"
                     answer="Most major issues have been addressed, including UI issues. A home page has been added, with bubbles! The icons at the side has been changed to reflect the actual page. Graphs have been split into 2 when I saw fit, so that its not a clunked mess. It's basically done :D"
                 />
+                <FAQComponent
+                    question="7 May"
+                    answer="Updated Sound Design. I decided to make it very minimal, no one wants sounds to be playing as you click buttons etc. Therefore, sounds will only play when you are typing in multiplayer and singlelplayer, just like for other websites :D"
+                />
             </Stack>
             <h1 style={{ textAlign: "center" }}>Final Writeup</h1>
             <Stack direction="column" style={{ padding: "1vw" }}>
